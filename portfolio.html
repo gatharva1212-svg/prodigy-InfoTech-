@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 04 - Personal Portfolio</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0819;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 6%;
+      background: transparent;
+      transition: background 0.4s, padding 0.4s, box-shadow 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(10,8,25,0.97);
+      padding: 12px 6%;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(124,92,252,0.2);
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+    }
+    .logo span { color: #7c5cfc; }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 5px;
+    }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+    }
+    .nav-links a:hover {
+      background: rgba(124,92,252,0.2);
+      color: white;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ===== SECTIONS COMMON ===== */
+    section {
+      padding: 100px 6% 70px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .section-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #7c5cfc;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    h2 span { color: #7c5cfc; }
+
+    /* ===== HOME ===== */
+    #home {
+      background: radial-gradient(ellipse 80% 60% at 50% 0%,
+        rgba(124,92,252,0.2) 0%, transparent 70%), #0a0819;
+      flex-direction: row;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .home-text { flex: 1; }
+
+    .greeting {
+      font-size: 1rem;
+      color: #7c5cfc;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    .home-text h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .home-text h1 span { color: #7c5cfc; }
+
+    .role {
+      font-size: 1.2rem;
+      color: #fc5c7d;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+    }
+
+    .home-text p {
+      color: #aaa;
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: 'Segoe UI', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: #7c5cfc;
+      color: white;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 25px rgba(124,92,252,0.5); }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 1.5px solid rgba(255,255,255,0.25);
+    }
+    .btn-outline:hover {
+      border-color: #7c5cfc;
+      background: rgba(124,92,252,0.1);
+    }
+
+    /* Profile photo placeholder */
+    .home-img {
+      flex-shrink: 0;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c5cfc, #fc5c7d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+      box-shadow: 0 0 60px rgba(124,92,252,0.35);
+      border: 4px solid rgba(124,92,252,0.4);
+    }
+
+    /* ===== SKILLS BAR ===== */
+    .skills-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .skill-tag {
+      padding: 6px 16px;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.4);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: #b39dff;
+      font-weight: 600;
+    }
+
+    /* ===== ABOUT ===== */
+    #about {
+      background: rgba(124,92,252,0.04);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .about-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.8rem;
+    }
+    .about-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #7c5cfc;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.9rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: #888; }
+    .info-value { color: white; font-weight: 600; }
+
+    /* ===== SKILLS SECTION ===== */
+    #skills { background: #0a0819; }
+
+    .skill-bars {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      max-width: 600px;
+    }
+
+    .skill-item label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #ddd;
+    }
+    .skill-item label span { color: #7c5cfc; }
+
+    .bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #7c5cfc, #fc5c7d);
+      width: 0%;
+      transition: width 1.2s ease;
+    }
+
+    /* ===== PROJECTS ===== */
+    #projects {
+      background: rgba(124,92,252,0.04);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.8rem;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(124,92,252,0.4);
+      box-shadow: 0 10px 30px rgba(124,92,252,0.15);
+    }
+
+    .project-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .project-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .project-card p {
+      color: #888;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .tech-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tech-tag {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.3);
+      border-radius: 4px;
+      color: #b39dff;
+      font-weight: 600;
+    }
+
+    /* ===== CONTACT ===== */
+    #contact { background: #0a0819; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .contact-info p {
+      color: #aaa;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .contact-icon {
+      width: 40px; height: 40px;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    /* Form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: white;
+      font-size: 0.9rem;
+      font-family: 'Segoe UI', sans-serif;
+      outline: none;
+      transition: border-color 0.3s;
+      resize: none;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: #7c5cfc;
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: #666; }
+
+    .contact-form textarea { height: 120px; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      color: #555;
+      font-size: 0.85rem;
+    }
+    footer span { color: #7c5cfc; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 768px) {
+      #home { flex-direction: column; text-align: center; gap: 2rem; }
+      .home-img { width: 180px; height: 180px; font-size: 5rem; }
+      .btn-row  { justify-content: center; }
+      .about-grid   { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0; right: 0;
+        width: 65%; height: 100vh;
+        background: #0a0819;
+        flex-direction: column;
+        padding: 80px 30px 30px;
+        border-left: 1px solid rgba(124,92,252,0.2);
+      }
+      .nav-links.open { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav id="navbar">
+    <a class="logo" href="#home">My<span>Portfolio</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ===== HOME ===== -->
+  <section id="home">
+    <div class="home-text">
+      <p class="greeting">👋 Hello, I'm</p>
+      <h1>Your <span>Name</span> Here</h1>
+      <p class="role">Web Developer & Designer</p>
+      <p>
+        I build modern, responsive, and user-friendly websites
+        using HTML, CSS, and JavaScript. Passionate about clean
+        code and great user experiences.
+      </p>
+      <div class="btn-row">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact"  class="btn btn-outline">Hire Me</a>
+      </div>
+      <div class="skills-row">
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Node.js</span>
+      </div>
+    </div>
+    <div class="home-img">👨‍💻</div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <p class="section-tag">Who I Am</p>
+    <h2>About <span>Me</span></h2>
+    <p style="color:#aaa; max-width:600px; line-height:1.8;">
+      I am a passionate web developer with a love for creating
+      beautiful and functional digital experiences. I specialize
+      in front-end development and enjoy turning ideas into
+      reality through code.
+    </p>
+
+    <div class="about-grid">
+      <!-- Personal Info -->
+      <div class="about-card">
+        <h3>📋 Personal Info</h3>
+        <div class="info-row">
+          <span class="info-label">Name</span>
+          <span class="info-value">Your Full Name</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">you@email.com</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Location</span>
+          <span class="info-value">Your City, India</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Available</span>
+          <span class="info-value" style="color:#4ade80">✔ Open to Work</span>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="about-card">
+        <h3>🎓 Education</h3>
+        <div class="info-row">
+          <span class="info-label">Degree</span>
+          <span class="info-value">B.Tech / BCA / BSc</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">College</span>
+          <span class="info-value">Your College Name</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Year</span>
+          <span class="info-value">2022 – 2026</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Internship</span>
+          <span class="info-value">Prodigy InfoTech</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills">
+    <p class="section-tag">What I Know</p>
+    <h2>My <span>Skills</span></h2>
+    <p style="color:#aaa;">Technologies I work with regularly.</p>
+
+    <div class="skill-bars">
+      <div class="skill-item">
+        <label>HTML / CSS <span>90%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-item">
+        <label>JavaScript <span>80%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <label>React JS <span>70%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="70"></div></div>
+      </div>
+      <div class="skill-item">
+        <label>Node.js <span>65%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="65"></div></div>
+      </div>
+      <div class="skill-item">
+        <label>Python <span>60%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="60"></div></div>
+      </div>
+      <div class="skill-item">
+        <label>MySQL <span>55%</span></label>
+        <div class="bar-bg"><div class="bar-fill" data-width="55"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects">
+    <p class="section-tag">My Work</p>
+    <h2>My <span>Projects</span></h2>
+    <p style="color:#aaa;">Some things I have built.</p>
+
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-icon">🌐</div>
+        <h3>Responsive Landing Page</h3>
+        <p>A modern landing page with interactive navbar that changes on scroll and hover effects.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">⏱️</div>
+        <h3>Stopwatch App</h3>
+        <p>A fully functional stopwatch with start, pause, reset, and lap time recording features.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🎮</div>
+        <h3>Tic Tac Toe Game</h3>
+        <p>An interactive tic-tac-toe game with 2-player mode and an AI opponent using smart logic.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">💼</div>
+        <h3>Portfolio Website</h3>
+        <p>This personal portfolio website showcasing skills, projects, and contact information.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact">
+    <p class="section-tag">Get In Touch</p>
+    <h2>Contact <span>Me</span></h2>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>Feel free to reach out for collaborations,
+           freelance work, or just a friendly chat!</p>
+
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <span>you@email.com</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <span>+91 00000 00000</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <span>Your City, Maharashtra, India</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">💼</div>
+          <span>linkedin.com/in/yourname</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🐙</div>
+          <span>github.com/yourname</span>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form">
+        <input type="text"  placeholder="Your Name" />
+        <input type="email" placeholder="Your Email" />
+        <input type="text"  placeholder="Subject" />
+        <textarea placeholder="Your Message..."></textarea>
+        <button class="btn btn-primary" onclick="sendMsg()">
+          📨 Send Message
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>© 2026 <span>Your Name</span> — Task 04 | Prodigy InfoTech Internship</p>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+
+    // 1. Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // 2. Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // 3. Animate skill bars when scrolled into view
+    const bars = document.querySelectorAll('.bar-fill');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const w = entry.target.getAttribute('data-width');
+          entry.target.style.width = w + '%';
+        }
+      });
+    }, { threshold: 0.3 });
+    bars.forEach(bar => observer.observe(bar));
+
+    // 4. Contact form send button
+    function sendMsg() {
+      const inputs = document.querySelectorAll('.contact-form input, .contact-form textarea');
+      let allFilled = true;
+      inputs.forEach(i => { if (!i.value.trim()) allFilled = false; });
+
+      if (!allFilled) {
+        alert('Please fill in all fields before sending!');
+        return;
+      }
+      alert('✅ Message sent! Thank you for reaching out.');
+      inputs.forEach(i => i.value = '');
+    }
+
+  </script>
+
+</body>
+</html>
