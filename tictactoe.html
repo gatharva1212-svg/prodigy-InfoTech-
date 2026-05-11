@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 03 - Tic Tac Toe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* ===== BADGE ===== */
+    .badge {
+      background: rgba(124,92,252,0.2);
+      border: 1px solid rgba(124,92,252,0.5);
+      color: #7c5cfc;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+    h1 span { color: #7c5cfc; }
+
+    .subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== MODE SELECTOR ===== */
+    .mode-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .mode-btn.active {
+      background: #7c5cfc;
+      border-color: #7c5cfc;
+      color: white;
+    }
+    .mode-btn:hover:not(.active) {
+      border-color: #7c5cfc;
+      color: white;
+    }
+
+    /* ===== SCORE BOARD ===== */
+    .scoreboard {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .score-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 0.8rem 1.5rem;
+      text-align: center;
+      min-width: 80px;
+    }
+    .score-box.active-player {
+      border-color: #7c5cfc;
+      background: rgba(124,92,252,0.15);
+    }
+    .score-label {
+      font-size: 0.72rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .score-num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: white;
+    }
+    .score-box.x-box .score-num { color: #7c5cfc; }
+    .score-box.o-box .score-num { color: #fc5c7d; }
+    .score-box.draw-box .score-num { color: #facc15; }
+
+    /* ===== STATUS ===== */
+    .status-msg {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #aaa;
+      margin-bottom: 1.2rem;
+      min-height: 1.5rem;
+      text-align: center;
+    }
+    .status-msg.x-turn  { color: #7c5cfc; }
+    .status-msg.o-turn  { color: #fc5c7d; }
+    .status-msg.winner  { color: #4ade80; font-size: 1.2rem; }
+    .status-msg.draw    { color: #facc15; font-size: 1.2rem; }
+
+    /* ===== BOARD ===== */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      user-select: none;
+    }
+
+    .cell:hover:not(.taken) {
+      background: rgba(124,92,252,0.15);
+      border-color: rgba(124,92,252,0.5);
+      transform: scale(1.05);
+    }
+
+    .cell.x {
+      color: #7c5cfc;
+      border-color: rgba(124,92,252,0.4);
+      background: rgba(124,92,252,0.1);
+    }
+
+    .cell.o {
+      color: #fc5c7d;
+      border-color: rgba(252,92,125,0.4);
+      background: rgba(252,92,125,0.1);
+    }
+
+    .cell.win {
+      background: rgba(74,222,128,0.15) !important;
+      border-color: #4ade80 !important;
+      animation: pop 0.3s ease;
+    }
+
+    .cell.taken { cursor: not-allowed; }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 11px 24px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Segoe UI', sans-serif;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-restart {
+      background: #7c5cfc;
+      color: white;
+    }
+    .btn-restart:hover {
+      box-shadow: 0 6px 20px rgba(124,92,252,0.5);
+    }
+
+    .btn-reset {
+      background: rgba(248,113,113,0.15);
+      color: #f87171;
+      border: 1px solid rgba(248,113,113,0.4);
+    }
+    .btn-reset:hover {
+      background: rgba(248,113,113,0.28);
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 400px) {
+      .cell { width: 85px; height: 85px; font-size: 2.2rem; }
+      .board { gap: 8px; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="badge">✦ Task 03 — Prodigy InfoTech</div>
+  <h1>Tic <span>Tac</span> Toe</h1>
+  <p class="subtitle">2 Players or vs AI</p>
+
+  <!-- MODE SELECT -->
+  <div class="mode-row">
+    <button class="mode-btn active" id="btn2P" onclick="setMode('2player')">👥 2 Players</button>
+    <button class="mode-btn"        id="btnAI" onclick="setMode('ai')">🤖 vs AI</button>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div class="scoreboard">
+    <div class="score-box x-box active-player" id="scoreX">
+      <div class="score-label">X</div>
+      <div class="score-num" id="xScore">0</div>
+    </div>
+    <div class="score-box draw-box">
+      <div class="score-label">Draw</div>
+      <div class="score-num" id="drawScore">0</div>
+    </div>
+    <div class="score-box o-box" id="scoreO">
+      <div class="score-label">O</div>
+      <div class="score-num" id="oScore">0</div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-msg x-turn" id="statusMsg">Player X's Turn</div>
+
+  <!-- BOARD -->
+  <div class="board" id="board">
+    <div class="cell" onclick="cellClick(0)"></div>
+    <div class="cell" onclick="cellClick(1)"></div>
+    <div class="cell" onclick="cellClick(2)"></div>
+    <div class="cell" onclick="cellClick(3)"></div>
+    <div class="cell" onclick="cellClick(4)"></div>
+    <div class="cell" onclick="cellClick(5)"></div>
+    <div class="cell" onclick="cellClick(6)"></div>
+    <div class="cell" onclick="cellClick(7)"></div>
+    <div class="cell" onclick="cellClick(8)"></div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-row">
+    <button class="btn btn-restart" onclick="restartGame()">↺ New Game</button>
+    <button class="btn btn-reset"   onclick="resetScore()">✕ Reset Score</button>
+  </div>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+
+    // Game state
+    let board      = ['','','','','','','','',''];
+    let current    = 'X';
+    let gameOver   = false;
+    let mode       = '2player';   // '2player' or 'ai'
+    let scores     = { X: 0, O: 0, Draw: 0 };
+
+    // Winning combinations
+    const wins = [
+      [0,1,2], [3,4,5], [6,7,8],   // rows
+      [0,3,6], [1,4,7], [2,5,8],   // cols
+      [0,4,8], [2,4,6]             // diagonals
+    ];
+
+    // DOM refs
+    const cells     = document.querySelectorAll('.cell');
+    const statusMsg = document.getElementById('statusMsg');
+    const xScore    = document.getElementById('xScore');
+    const oScore    = document.getElementById('oScore');
+    const drawScore = document.getElementById('drawScore');
+    const scoreX    = document.getElementById('scoreX');
+    const scoreO    = document.getElementById('scoreO');
+
+    // ===== SET MODE =====
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn2P').classList.toggle('active', m === '2player');
+      document.getElementById('btnAI').classList.toggle('active', m === 'ai');
+      restartGame();
+    }
+
+    // ===== CELL CLICK =====
+    function cellClick(i) {
+      if (gameOver || board[i] !== '') return;
+      if (mode === 'ai' && current === 'O') return; // block clicking for AI turn
+
+      makeMove(i, current);
+
+      // If vs AI and game not over, AI plays
+      if (mode === 'ai' && !gameOver && current === 'O') {
+        setTimeout(aiMove, 400);
+      }
+    }
+
+    // ===== MAKE MOVE =====
+    function makeMove(i, player) {
+      board[i] = player;
+      cells[i].textContent = player;
+      cells[i].classList.add(player.toLowerCase(), 'taken');
+
+      const winLine = checkWin(player);
+      if (winLine) {
+        // Highlight winning cells
+        winLine.forEach(idx => cells[idx].classList.add('win'));
+        statusMsg.textContent = player === 'X' ? '🎉 Player X Wins!' : (mode === 'ai' ? '🤖 AI Wins!' : '🎉 Player O Wins!');
+        statusMsg.className   = 'status-msg winner';
+        scores[player]++;
+        updateScore();
+        gameOver = true;
+        return;
+      }
+
+      if (board.every(c => c !== '')) {
+        statusMsg.textContent = "🤝 It's a Draw!";
+        statusMsg.className   = 'status-msg draw';
+        scores.Draw++;
+        updateScore();
+        gameOver = true;
+        return;
+      }
+
+      // Switch player
+      current = current === 'X' ? 'O' : 'X';
+      updateStatus();
+    }
+
+    // ===== CHECK WIN =====
+    function checkWin(player) {
+      for (let combo of wins) {
+        if (combo.every(i => board[i] === player)) return combo;
+      }
+      return null;
+    }
+
+    // ===== AI MOVE (Minimax) =====
+    function aiMove() {
+      const best = bestMove();
+      makeMove(best, 'O');
+    }
+
+    function bestMove() {
+      // Try to win
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+          board[i] = 'O';
+          if (checkWin('O')) { board[i] = ''; return i; }
+          board[i] = '';
+        }
+      }
+      // Block X from winning
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+          board[i] = 'X';
+          if (checkWin('X')) { board[i] = ''; return i; }
+          board[i] = '';
+        }
+      }
+      // Take center
+      if (board[4] === '') return 4;
+      // Take corners
+      const corners = [0, 2, 6, 8].filter(i => board[i] === '');
+      if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
+      // Take any empty
+      const empty = board.map((v,i) => v === '' ? i : null).filter(i => i !== null);
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    // ===== UPDATE STATUS =====
+    function updateStatus() {
+      if (mode === 'ai') {
+        statusMsg.textContent = current === 'X' ? 'Your Turn (X)' : '🤖 AI is thinking...';
+      } else {
+        statusMsg.textContent = 'Player ' + current + "'s Turn";
+      }
+      statusMsg.className = 'status-msg ' + (current === 'X' ? 'x-turn' : 'o-turn');
+
+      // Highlight active player score box
+      scoreX.classList.toggle('active-player', current === 'X');
+      scoreO.classList.toggle('active-player', current === 'O');
+    }
+
+    // ===== UPDATE SCORE =====
+    function updateScore() {
+      xScore.textContent    = scores.X;
+      oScore.textContent    = scores.O;
+      drawScore.textContent = scores.Draw;
+    }
+
+    // ===== RESTART GAME (keep score) =====
+    function restartGame() {
+      board    = ['','','','','','','','',''];
+      current  = 'X';
+      gameOver = false;
+
+      cells.forEach(c => {
+        c.textContent = '';
+        c.className   = 'cell';
+      });
+
+      updateStatus();
+    }
+
+    // ===== RESET SCORE =====
+    function resetScore() {
+      scores = { X: 0, O: 0, Draw: 0 };
+      updateScore();
+      restartGame();
+    }
+
+  </script>
+
+</body>
+</html>
