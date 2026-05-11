@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Landing Page – Task 01</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --nav-bg-transparent: rgba(10, 8, 25, 0);
+      --nav-bg-solid: rgba(10, 8, 25, 0.95);
+      --accent: #7c5cfc;
+      --accent2: #fc5c7d;
+      --white: #f0eeff;
+      --muted: #9990bb;
+      --transition: 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0a0819;
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 5%;
+      background: var(--nav-bg-transparent);
+      border-bottom: 1px solid transparent;
+      transition: background var(--transition),
+                  border-color var(--transition),
+                  padding var(--transition),
+                  box-shadow var(--transition);
+    }
+
+    nav.scrolled {
+      background: var(--nav-bg-solid);
+      border-color: rgba(124,92,252,0.25);
+      padding: 0.9rem 5%;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      padding: 0.45rem 1rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 6px;
+      position: relative;
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 50%;
+      width: 0; height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transform: translateX(-50%);
+      transition: width var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+      background: rgba(124,92,252,0.12);
+    }
+    .nav-links a:hover::after { width: 60%; }
+
+    .nav-cta {
+      padding: 0.5rem 1.3rem !important;
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      background: #9b7bff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124,92,252,0.45) !important;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* SECTIONS */
+    section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7rem 5% 5rem;
+    }
+
+    /* HERO */
+    #home {
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,92,252,0.18) 0%, transparent 70%), #0a0819;
+      flex-direction: column;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.35);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      animation: fadeUp 0.9s 0.1s ease both;
+    }
+    h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    .btn-primary {
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn-primary:hover {
+      background: #9b7bff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(124,92,252,0.4);
+    }
+
+    .btn-outline {
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid rgba(240,238,255,0.25);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(124,92,252,0.1);
+    }
+
+    /* OTHER SECTIONS */
+    .section-inner { max-width: 900px; width: 100%; }
+
+    .section-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1.2rem;
+    }
+
+    p { color: var(--muted); line-height: 1.75; font-size: 1rem; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-top: 2.5rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 1.6rem;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124,92,252,0.4);
+      box-shadow: 0 8px 30px rgba(124,92,252,0.15);
+    }
+    .card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--white);
+    }
+    .card p { font-size: 0.88rem; }
+
+    #about { background: rgba(124,92,252,0.04); }
+
+    #contact { flex-direction: column; text-align: center; gap: 1.5rem; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 680px) {
+      .nav-links {
+        position: fixed;
+        top: 0; right: -100%;
+        width: 70%; height: 100vh;
+        flex-direction: column;
+        background: #0a0819;
+        border-left: 1px solid rgba(124,92,252,0.2);
+        padding: 6rem 2rem 2rem;
+        gap: 0.5rem;
+        transition: right 0.35s ease;
+      }
+      .nav-links.open { right: 0; }
+      .nav-links a { font-size: 1.1rem; padding: 0.7rem 1rem; }
+      .hamburger { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="#home" class="logo">Prodigy<span>.</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <span class="badge">✦ Task 01 – Prodigy InfoTech</span>
+    <h1>Responsive<br/><span class="highlight">Landing Page</span></h1>
+    <p class="hero-sub">
+      An interactive navigation menu that changes color on scroll and on hover,
+      built with pure HTML, CSS, and JavaScript.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Explore Features</button>
+      <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Learn More</button>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-inner">
+      <p class="section-tag">What's inside</p>
+      <h2>Core Features</h2>
+      <p>Everything you need for a modern, interactive landing page.</p>
+      <div class="features-grid">
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <h3>Scroll-Aware Nav</h3>
+          <p>Navbar switches from transparent to solid dark background as you scroll down.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">✨</div>
+          <h3>Hover Effects</h3>
+          <p>Menu items highlight with a purple tint and animated underline on hover.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📌</div>
+          <h3>Fixed Position</h3>
+          <p>The nav stays pinned to the top and remains visible across all sections.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3>Fully Responsive</h3>
+          <p>Collapses into a smooth slide-in hamburger menu on mobile devices.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Pure Vanilla JS</h3>
+          <p>No libraries or frameworks — just clean HTML, CSS, and JavaScript.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌙</div>
+          <h3>Dark Aesthetic</h3>
+          <p>Deep dark background with vibrant purple accents for a modern look.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-inner">
+      <p class="section-tag">About</p>
+      <h2>About This Project</h2>
+      <p>
+        This project is <strong style="color:#f0eeff">Task 01</strong> of the
+        Prodigy InfoTech internship program. The goal is to build a responsive,
+        interactive navigation menu using only HTML, CSS, and JavaScript.
+      </p>
+      <br/>
+      <p>
+        The navbar listens to the <code style="color:#7c5cfc;background:rgba(124,92,252,0.1);padding:2px 6px;border-radius:4px">scroll</code>
+        event and toggles a <code style="color:#7c5cfc;background:rgba(124,92,252,0.1);padding:2px 6px;border-radius:4px">.scrolled</code>
+        class, switching the background from transparent to dark with a purple border.
+      </p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-tag">Get in touch</p>
+    <h2>Let's Connect</h2>
+    <p style="max-width:480px;text-align:center">
+      Have a question or want to collaborate? Reach out anytime!
+    </p>
+    <button class="btn-primary" style="margin-top:0.5rem">Send a Message</button>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Prodigy InfoTech Internship – Task 01 &nbsp;|&nbsp; Built with HTML · CSS · JS</p>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    const navbar    = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+
+    // 1. Change navbar color on scroll
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // 2. Toggle hamburger menu on mobile
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
+    // 3. Close menu when a nav link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
